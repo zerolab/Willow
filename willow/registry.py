@@ -31,6 +31,7 @@ class WillowRegistry(object):
         self._registered_operations = defaultdict(dict)
         self._registered_converters = dict()
         self._registered_converter_costs = dict()
+        self._registered_optimizers = dict()
 
     def register_operation(self, image_class, operation_name, func):
         self._registered_operations[image_class][operation_name] = func
@@ -74,6 +75,13 @@ class WillowRegistry(object):
 
         for converter in converters:
             self.register_converter(converter[0], converter[1], converter[2])
+
+    def register_optimizer(self, optimizer):
+        optimizer_classes = getattr(optimizer, 'willow_optimizer_classes', [])
+
+        for optimizer_class in optimizer_classes:
+            if optimizer_class.check_binary():
+                self._registered_optimizers.add(optimizer_class)
 
     def get_operation(self, image_class, operation_name):
         return self._registered_operations[image_class][operation_name]
@@ -119,6 +127,15 @@ class WillowRegistry(object):
             return available_image_classes
         else:
             return image_classes
+
+    def get_optimizers_for_image(self, image):
+        optimizers = dict()
+        for optimizer in self._registered_optimizers:
+            if optimizer.applies_to(image):
+                optimizers.add(optimizer)
+
+        return optimizers
+
 
     # Routing
 
