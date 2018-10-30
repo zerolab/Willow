@@ -14,6 +14,13 @@ def setup():
         WebPImageFile,
     )
     from willow.plugins import pillow, wand, opencv
+    from willow.optimizers import (
+        gifsicle,
+        jpegoptim,
+        jpegtran,
+        optipng,
+        pngquant
+    )
 
     registry.register_image_class(JPEGImageFile)
     registry.register_image_class(PNGImageFile)
@@ -27,6 +34,12 @@ def setup():
     registry.register_plugin(pillow)
     registry.register_plugin(wand)
     registry.register_plugin(opencv)
+
+    registry.register_optimizer(gifsicle)
+    registry.register_optimizer(jpegoptim)
+    registry.register_optimizer(jpegtran)
+    registry.register_optimizer(optipng)
+    registry.register_optimizer(pngquant)
 
 setup()
 
