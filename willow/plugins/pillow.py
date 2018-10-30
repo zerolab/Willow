@@ -132,6 +132,14 @@ class PillowImage(Image):
         return PillowImage(new_image.convert('RGB'))
 
     @Image.operation
+    def optimize(self, f, quality=85, progressive=False):
+        optimizers = self.get_optimizers_for_image(self.image)
+        # TODO add optimizer chain and calculate the best match
+        # TODO pass the quality/progressive options where applicable
+        for optimizer in optimizers:
+            optimizer.process(self.image)
+
+    @Image.operation
     def save_as_jpeg(self, f, quality=85, optimize=False, progressive=False):
         if self.image.mode in ['1', 'P']:
             image = self.image.convert('RGB')
@@ -146,6 +154,9 @@ class PillowImage(Image):
             kwargs['progressive'] = True
 
         image.save(f, 'JPEG', quality=quality, **kwargs)
+        # TODO only optimize when WILLOW_ENABLE_OPTIMIZERS is enabled
+        self.optimize(f)
+
         return JPEGImageFile(f)
 
     @Image.operation
@@ -156,6 +167,7 @@ class PillowImage(Image):
             kwargs['optimize'] = True
 
         self.image.save(f, 'PNG', **kwargs)
+        self.optimize(f)
         return PNGImageFile(f)
 
     @Image.operation
