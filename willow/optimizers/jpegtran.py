@@ -11,7 +11,7 @@ class Jpegtran(OptimizerBase):
         '-progressive'  # make the resulting image progressive
     ]
 
-    def applies_to(self, image):
+    def applies_to(self, image, **kwargs):
         return super().applies_to(image, mimetype='image/jpeg')
 
 

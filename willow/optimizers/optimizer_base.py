@@ -20,7 +20,7 @@ class OptimizerBase:
         args = [cls.binary] + cls.args
         try:
             return subprocess.check_output(args, stderr=subprocess.STDOUT)
-        except FileNotFoundError:
+        except (FileNotFoundError, subprocess.CalledProcessError):
             return False
 
     def process(self, image):
